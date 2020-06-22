@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.util.Calendar;
 
 public class TicketDAO {
 
@@ -20,31 +21,25 @@ public class TicketDAO {
     public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
     public boolean saveTicket(Ticket ticket){
-        Connection con = null;
-        try {
-            con = dataBaseConfig.getConnection();
+        try (Connection con = dataBaseConfig.getConnection()) {
             PreparedStatement ps = con.prepareStatement(DBConstants.SAVE_TICKET);
             //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
             //ps.setInt(1,ticket.getId());
             ps.setInt(1,ticket.getParkingSpot().getId());
             ps.setString(2, ticket.getVehicleRegNumber());
             ps.setDouble(3, ticket.getPrice());
-            ps.setTimestamp(4, new Timestamp(ticket.getInTime().getTime()));
-            ps.setTimestamp(5, (ticket.getOutTime() == null)?null: (new Timestamp(ticket.getOutTime().getTime())) );
+            ps.setTimestamp(4, new Timestamp(ticket.getInTime().getTimeInMillis()));
+            ps.setTimestamp(5, (ticket.getOutTime() == null)?null: (new Timestamp(ticket.getOutTime().getTime().getTime())) );
             return ps.execute();
         }catch (Exception ex){
             logger.error("Error fetching next available slot",ex);
-        }finally {
-            dataBaseConfig.closeConnection(con);
             return false;
         }
     }
 
     public Ticket getTicket(String vehicleRegNumber) {
-        Connection con = null;
         Ticket ticket = null;
-        try {
-            con = dataBaseConfig.getConnection();
+        try (Connection con = dataBaseConfig.getConnection()) {
             PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET);
             //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
             ps.setString(1,vehicleRegNumber);
@@ -56,17 +51,22 @@ public class TicketDAO {
                 ticket.setId(rs.getInt(2));
                 ticket.setVehicleRegNumber(vehicleRegNumber);
                 ticket.setPrice(rs.getDouble(3));
-                ticket.setInTime(rs.getTimestamp(4));
-                ticket.setOutTime(rs.getTimestamp(5));
+                Timestamp timestamp = rs.getTimestamp(4);
+                Calendar inTime = Calendar.getInstance();
+                inTime.setTimeInMillis(timestamp.getTime());
+                ticket.setInTime(inTime);
+                timestamp = rs.getTimestamp(4);
+                Calendar outTime = Calendar.getInstance();
+                outTime.setTimeInMillis(timestamp.getTime());
+                ticket.setOutTime(outTime);
             }
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
         }catch (Exception ex){
             logger.error("Error fetching next available slot",ex);
-        }finally {
-            dataBaseConfig.closeConnection(con);
-            return ticket;
         }
+        
+        return ticket;
     }
 
     public boolean updateTicket(Ticket ticket) {
@@ -75,7 +75,7 @@ public class TicketDAO {
             con = dataBaseConfig.getConnection();
             PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
             ps.setDouble(1, ticket.getPrice());
-            ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));
+            ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTimeInMillis()));
             ps.setInt(3,ticket.getId());
             ps.execute();
             return true;
