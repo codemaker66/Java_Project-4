@@ -86,4 +86,23 @@ public class TicketDAO {
         }
         return false;
     }
+
+	public boolean checkVehicleRegNumberExistence(String vehicleRegNumber) {
+		
+	        try (Connection con = dataBaseConfig.getConnection()) {
+	            PreparedStatement ps = con.prepareStatement(DBConstants.GET_REG_NUMBER);
+	            ps.setString(1,vehicleRegNumber);
+	            ResultSet rs = ps.executeQuery();
+	            if(rs.next()){
+	               return true;
+	            }
+	            dataBaseConfig.closeResultSet(rs);
+	            dataBaseConfig.closePreparedStatement(ps);
+	        }catch (Exception ex){
+	            logger.error("Error fetching vehicle registration number",ex);
+	        }
+		
+		return false;
+	}
+	
 }

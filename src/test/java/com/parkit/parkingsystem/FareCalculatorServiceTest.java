@@ -160,5 +160,73 @@ public class FareCalculatorServiceTest {
         fareCalculatorService.calculateFare(ticket);
         assertEquals((0 * Fare.BIKE_RATE_PER_HOUR) , ticket.getPrice());
     }
+    
+    @Test
+    public void calculateFareCarWithFivePercentDiscount(){
+    	Calendar inTime = Calendar.getInstance();
+        long ms = System.currentTimeMillis() - (  60 * 60 * 1000);
+        inTime.setTimeInMillis(ms);
+        Calendar outTime = Calendar.getInstance();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        FareCalculatorService.discount = true;
+        fareCalculatorService.calculateFare(ticket);
+        FareCalculatorService.discount = false;
+        assertEquals( (Fare.CAR_RATE_PER_HOUR)  - (0.05 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
+    }
+
+    @Test
+    public void calculateFareBikeWithFivePercentDiscount(){
+    	Calendar inTime = Calendar.getInstance();
+        long ms = System.currentTimeMillis() - (  60 * 60 * 1000);
+        inTime.setTimeInMillis(ms);
+        Calendar outTime = Calendar.getInstance();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        FareCalculatorService.discount = true;
+        fareCalculatorService.calculateFare(ticket);
+        FareCalculatorService.discount = false;
+        assertEquals((Fare.BIKE_RATE_PER_HOUR) - (0.05 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice());
+    }
+    
+    @Test
+    public void calculateFareBikeWithLessThanOneHourParkingTimeAndWithFivePercentDiscount(){
+    	Calendar inTime = Calendar.getInstance();
+        long ms = System.currentTimeMillis() - (  45 * 60 * 1000);
+        inTime.setTimeInMillis(ms);
+        Calendar outTime = Calendar.getInstance();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE,false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        FareCalculatorService.discount = true;
+        fareCalculatorService.calculateFare(ticket);
+        FareCalculatorService.discount = false;
+        assertEquals((0.75 * Fare.BIKE_RATE_PER_HOUR) - (0.05 * 0.75 * Fare.BIKE_RATE_PER_HOUR), ticket.getPrice() );
+    }
+
+    @Test
+    public void calculateFareCarWithLessThanOneHourParkingTimeAndWithFivePercentDiscount(){
+    	Calendar inTime = Calendar.getInstance();
+        long ms = System.currentTimeMillis() - (  45 * 60 * 1000);
+        inTime.setTimeInMillis(ms);
+        Calendar outTime = Calendar.getInstance();
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR,false);
+
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+        FareCalculatorService.discount = true;
+        fareCalculatorService.calculateFare(ticket);
+        FareCalculatorService.discount = false;
+        assertEquals((0.75 * Fare.CAR_RATE_PER_HOUR) - (0.05 * 0.75 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
+    }
 
 }
