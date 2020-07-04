@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,6 +54,12 @@ public class ParkingDataBaseIT {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
         //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
+        boolean result1 = ticketDAO.checkVehicleRegNumberExistence("ABCDEF");
+        int number = ticketDAO.getVehicleParkingNumber("ABCDEF");
+        boolean result2 = parkingSpotDAO.checkParkingSpotAvailability(number);
+        
+        assertEquals(true, result1);
+        assertEquals(true, result2);
     }
 
     @Test
@@ -60,6 +68,9 @@ public class ParkingDataBaseIT {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processExitingVehicle();
         //TODO: check that the fare generated and out time are populated correctly in the database
+        boolean result1 = ticketDAO.checkFareAndOutTime("ABCDEF");
+        
+        assertEquals(true, result1);
     }
 
 }

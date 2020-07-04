@@ -55,5 +55,25 @@ public class ParkingSpotDAO {
             dataBaseConfig.closeConnection(con);
         }
     }
+    
+    public boolean checkParkingSpotAvailability(int number) {
+    	Connection con = null;
+        try {
+            con = dataBaseConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(DBConstants.CHECK_PARKING_SPOT_AVAILABILITY);
+            ps.setInt(1, number);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                return (number == rs.getInt(1) && rs.getInt(2) == 0);
+            }
+            dataBaseConfig.closeResultSet(rs);
+            dataBaseConfig.closePreparedStatement(ps);
+        }catch (Exception ex){
+            logger.error("Error fetching next available slot",ex);
+        }finally {
+            dataBaseConfig.closeConnection(con);
+        }
+        return false;
+    }
 
 }

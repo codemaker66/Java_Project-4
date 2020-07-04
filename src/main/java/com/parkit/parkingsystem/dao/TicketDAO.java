@@ -105,4 +105,38 @@ public class TicketDAO {
 		return false;
 	}
 	
+	public int getVehicleParkingNumber(String vehicleRegNumber) {
+		int num = 0;
+        try (Connection con = dataBaseConfig.getConnection()) {
+            PreparedStatement ps = con.prepareStatement(DBConstants.GET_REG_NUMBER);
+            ps.setString(1,vehicleRegNumber);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+               return rs.getInt(1);
+            }
+            dataBaseConfig.closeResultSet(rs);
+            dataBaseConfig.closePreparedStatement(ps);
+        }catch (Exception ex){
+            logger.error("Error fetching vehicle registration number",ex);
+        }
+	
+	return num;
+}
+
+	public boolean checkFareAndOutTime(String string) {
+		 try (Connection con = dataBaseConfig.getConnection()) {
+	            PreparedStatement ps = con.prepareStatement(DBConstants.CHECK_FARE_AND_OUT_TIME);
+	            ps.setString(1,string);
+	            ResultSet rs = ps.executeQuery();
+	            if(rs.next()){
+	               return true;
+	            }
+	            dataBaseConfig.closeResultSet(rs);
+	            dataBaseConfig.closePreparedStatement(ps);
+	        }catch (Exception ex){
+	            logger.error("Error in tests",ex);
+	        }
+		return false;
+	}
+	
 }
