@@ -4,19 +4,20 @@ import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.model.Ticket;
 
 public class FareCalculatorService {
-	
+
 	public static boolean discount;
 
 	public void calculateFare(Ticket ticket) {
 		if ((ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime()))) {
 			throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
 		}
+
 		long inHour = ticket.getInTime().getTimeInMillis();
 		long outHour = ticket.getOutTime().getTimeInMillis();
-		
+
 		long duration = outHour - inHour;
-		
-		if (duration <= 1800000 ) {
+
+		if (duration <= 1800000) {
 
 			switch (ticket.getParkingSpot().getParkingType()) {
 			case CAR: {
@@ -32,13 +33,11 @@ public class FareCalculatorService {
 			}
 
 		}
-		
 
 		if (duration < 3600000 && duration > 1800000) {
-			
-			if(discount)
-			{
-				
+
+			if (discount) {
+
 				switch (ticket.getParkingSpot().getParkingType()) {
 				case CAR: {
 					ticket.setPrice((0.75 * Fare.CAR_RATE_PER_HOUR) - (0.05 * 0.75 * Fare.CAR_RATE_PER_HOUR));
@@ -51,10 +50,9 @@ public class FareCalculatorService {
 				default:
 					throw new IllegalArgumentException("Unkown Parking Type");
 				}
-				
-			}
-			else {
-				
+
+			} else {
+
 				switch (ticket.getParkingSpot().getParkingType()) {
 				case CAR: {
 					ticket.setPrice(0.75 * Fare.CAR_RATE_PER_HOUR);
@@ -68,17 +66,15 @@ public class FareCalculatorService {
 					throw new IllegalArgumentException("Unkown Parking Type");
 				}
 
-				
 			}
 		}
 
 		if (duration >= 3600000) {
 
 			int h = (int) ((duration / 1000) / 3600);
-			
-			if (discount)
-			{
-				
+
+			if (discount) {
+
 				switch (ticket.getParkingSpot().getParkingType()) {
 				case CAR: {
 					ticket.setPrice((h * Fare.CAR_RATE_PER_HOUR) - (0.05 * h * Fare.CAR_RATE_PER_HOUR));
@@ -91,10 +87,9 @@ public class FareCalculatorService {
 				default:
 					throw new IllegalArgumentException("Unkown Parking Type");
 				}
-				
-			}
-			else {
-				
+
+			} else {
+
 				switch (ticket.getParkingSpot().getParkingType()) {
 				case CAR: {
 					ticket.setPrice(h * Fare.CAR_RATE_PER_HOUR);
@@ -107,7 +102,7 @@ public class FareCalculatorService {
 				default:
 					throw new IllegalArgumentException("Unkown Parking Type");
 				}
-				
+
 			}
 
 		}
