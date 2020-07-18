@@ -14,7 +14,7 @@ public class DataBaseTestConfig extends DataBaseConfig {
         logger.info("Create DB connection");
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/test?useTimezone=true&serverTimezone=GMT%2B2","root","");
+                "jdbc:mysql://localhost:3306/test?useTimezone=true&serverTimezone=GMT%2B2","root","p4554th3d4t4b453");
     }
 
     public void closeConnection(Connection con){

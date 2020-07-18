@@ -32,6 +32,7 @@ public class TicketDAO {
 			ps.setTimestamp(4, new Timestamp(ticket.getInTime().getTimeInMillis()));
 			ps.setTimestamp(5,
 					(ticket.getOutTime() == null) ? null : (new Timestamp(ticket.getOutTime().getTimeInMillis())));
+			ps.setBoolean(6, ticket.getDiscount());
 			return ps.execute();
 		} catch (Exception ex) {
 			logger.error("Error fetching next available slot", ex);
@@ -63,11 +64,7 @@ public class TicketDAO {
 				Calendar inTime = Calendar.getInstance();
 				inTime.setTimeInMillis(timestamp.getTime());
 				ticket.setInTime(inTime);
-				timestamp = rs.getTimestamp(5);
-                Calendar outTime = Calendar.getInstance();
-                if (timestamp == null) {
-                	ticket.setOutTime(outTime);
-                }
+                ticket.setDiscount(rs.getBoolean(5));
 			}
 		} catch (Exception ex) {
 			logger.error("Error fetching next available slot", ex);
@@ -100,20 +97,24 @@ public class TicketDAO {
 		}
 	}
 
-	public boolean checkVehicleRegNumberExistence(String vehicleRegNumber) {
+	public boolean checkVehicleTicket(String vehicleRegNumber, int option) {
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			con = dataBaseConfig.getConnection();
-			ps = con.prepareStatement(DBConstants.GET_VEHICLE_REG_NUMBER);
+			if (option == 1) {
+				ps = con.prepareStatement(DBConstants.GET_VEHICLE_REG_NUMBER);
+			} else {
+				ps = con.prepareStatement(DBConstants.CHECK_FARE_AND_OUT_TIME);
+			}
 			ps.setString(1, vehicleRegNumber);
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				return true;
 			}
 		} catch (Exception ex) {
-			logger.error("Error fetching vehicle registration number", ex);
+			logger.error("Error fetching vehicle ticket", ex);
 		} finally {
 			dataBaseConfig.closeConnection(con);
 			dataBaseConfig.closePreparedStatement(ps);
@@ -137,7 +138,7 @@ public class TicketDAO {
 				return rs.getInt(1);
 			}
 		} catch (Exception ex) {
-			logger.error("Error fetching vehicle registration number", ex);
+			logger.error("Error fetching vehicle parking number", ex);
 		} finally {
 			dataBaseConfig.closeConnection(con);
 			dataBaseConfig.closePreparedStatement(ps);
@@ -145,29 +146,6 @@ public class TicketDAO {
 		}
 
 		return num;
-	}
-
-	public boolean checkFareAndOutTime(String string) {
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			con = dataBaseConfig.getConnection();
-			ps = con.prepareStatement(DBConstants.CHECK_FARE_AND_OUT_TIME);
-			ps.setString(1, string);
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				return true;
-			}
-		} catch (Exception ex) {
-			logger.error("Error in tests", ex);
-		} finally {
-			dataBaseConfig.closeConnection(con);
-			dataBaseConfig.closePreparedStatement(ps);
-			dataBaseConfig.closeResultSet(rs);
-		}
-
-		return false;
 	}
 
 }

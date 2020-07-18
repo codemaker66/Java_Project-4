@@ -46,31 +46,38 @@ public class ParkingDataBaseIT {
 
     @AfterAll
     private static void tearDown(){
-
+    	dataBasePrepareService.clearDataBaseEntries();
     }
 
     @Test
     public void testParkingACar(){
+    	// Arrange
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
-        //TODO: check that a ticket is actualy saved in DB and Parking table is updated with availability
-        boolean result1 = ticketDAO.checkVehicleRegNumberExistence("ABCDEF");
+        
+        // Act
+        boolean result1 = ticketDAO.checkVehicleTicket("ABCDEF", 1);
         int number = ticketDAO.getVehicleParkingNumber("ABCDEF");
         boolean result2 = parkingSpotDAO.checkParkingSpotAvailability(number);
         
+        // Assert
         assertEquals(true, result1);
         assertEquals(true, result2);
     }
 
     @Test
-    public void testParkingLotExit(){
+    public void testParkingLotExit() throws InterruptedException{
+    	// Arrange
         testParkingACar();
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        Thread.sleep(500);
         parkingService.processExitingVehicle();
-        //TODO: check that the fare generated and out time are populated correctly in the database
-        boolean result1 = ticketDAO.checkFareAndOutTime("ABCDEF");
         
-        assertEquals(true, result1);
+        // Act
+        boolean result = ticketDAO.checkVehicleTicket("ABCDEF", 2);
+        
+        // Assert
+        assertEquals(true, result);
     }
 
 }
