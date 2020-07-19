@@ -5,6 +5,11 @@ import com.parkit.parkingsystem.model.Ticket;
 
 public class FareCalculatorService {
 
+	/**
+	 * This method calculate the fare for the exiting vehicle from the parking.
+	 * 
+	 * @param ticket contain an object of type Ticket.
+	 */
 	public void calculateFare(Ticket ticket) {
 		if ((ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime()))) {
 			throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());

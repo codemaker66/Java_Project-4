@@ -20,6 +20,12 @@ public class TicketDAO {
 
 	public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
+	/**
+	 * This method save the vehicle ticket in the database.
+	 * 
+	 * @param ticket contain an object of type Ticket.
+	 * @return true if the ticket was correctly saved in the database.
+	 */
 	public boolean saveTicket(Ticket ticket) {
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -43,6 +49,12 @@ public class TicketDAO {
 		}
 	}
 
+	/**
+	 * This method retrieve the ticket of the given vehicle registration number.
+	 * 
+	 * @param vehicleRegNumber contain a string that represent the vehicle registration number.
+	 * @return the ticket of the given vehicle.
+	 */
 	public Ticket getTicket(String vehicleRegNumber) {
 		Ticket ticket = null;
 		Connection con = null;
@@ -64,7 +76,7 @@ public class TicketDAO {
 				Calendar inTime = Calendar.getInstance();
 				inTime.setTimeInMillis(timestamp.getTime());
 				ticket.setInTime(inTime);
-                ticket.setDiscount(rs.getBoolean(5));
+				ticket.setDiscount(rs.getBoolean(5));
 			}
 		} catch (Exception ex) {
 			logger.error("Error fetching next available slot", ex);
@@ -77,6 +89,12 @@ public class TicketDAO {
 		return ticket;
 	}
 
+	/**
+	 * This method update the ticket data for a given vehicle.
+	 * 
+	 * @param ticket contain an object of type Ticket.
+	 * @return true if the ticket was updated correctly in the database.
+	 */
 	public boolean updateTicket(Ticket ticket) {
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -97,6 +115,13 @@ public class TicketDAO {
 		}
 	}
 
+	/**
+	 * This method check for vehicle registration number or price and out time existence in the database.
+	 * 
+	 * @param vehicleRegNumber contain a string that represent the vehicle registration number.
+	 * @param option contain an integer to make the correct call of the needed check in the database.
+	 * @return true if vehicle registration number or price and out time exists in the database.
+	 */
 	public boolean checkVehicleTicket(String vehicleRegNumber, int option) {
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -124,8 +149,14 @@ public class TicketDAO {
 		return false;
 	}
 
+	/**
+	 * This method retrieve the vehicle parking spot number from the database.
+	 * 
+	 * @param vehicleRegNumber contain a string that represent the vehicle registration number.
+	 * @return an integer that represent the parking spot number.
+	 */
 	public int getVehicleParkingNumber(String vehicleRegNumber) {
-		int num = 0;
+		int number = 0;
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -145,7 +176,7 @@ public class TicketDAO {
 			dataBaseConfig.closeResultSet(rs);
 		}
 
-		return num;
+		return number;
 	}
 
 }

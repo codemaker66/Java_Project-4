@@ -16,6 +16,12 @@ public class ParkingSpotDAO {
 
 	public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
+	/**
+	 * This method verify if there are an available spot in the parking for a given vehicle type.
+	 * 
+	 * @param parkingType contain an object of type ParkingType.
+	 * @return an integer that represent the parking number if available.
+	 */
 	public int getNextAvailableSlot(ParkingType parkingType) {
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -39,6 +45,12 @@ public class ParkingSpotDAO {
 		return result;
 	}
 
+	/**
+	 * This method update the parking spot availability in the database.
+	 * 
+	 * @param parkingSpot contain an object of type ParkingSpot.
+	 * @return true if the given parking spot was correctly updated in the database.
+	 */
 	public boolean updateParking(ParkingSpot parkingSpot) {
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -58,6 +70,12 @@ public class ParkingSpotDAO {
 		}
 	}
 
+	/**
+	 * This method check if the availability of a parking spot was correctly updated in the database.
+	 * 
+	 * @param number contain the parking spot number.
+	 * @return true if the parking spot availability was updated correctly in the database.
+	 */
 	public boolean checkParkingSpotAvailability(int number) {
 		Connection con = null;
 		PreparedStatement ps = null;

@@ -21,64 +21,64 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 public class ParkingServiceTest {
 
-    private static ParkingService parkingService;
-    private static Ticket ticket;
+	private static ParkingService parkingService;
+	private static Ticket ticket;
 
-    @Mock
-    private static InputReaderUtil inputReaderUtil;
-    @Mock
-    private static ParkingSpotDAO parkingSpotDAO;
-    @Mock
-    private static TicketDAO ticketDAO;
+	@Mock
+	private static InputReaderUtil inputReaderUtil;
+	@Mock
+	private static ParkingSpotDAO parkingSpotDAO;
+	@Mock
+	private static TicketDAO ticketDAO;
 
-    @BeforeEach
-    private void setUpPerTest() {
-        try {
-            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-            
-            ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
-            ticket = new Ticket();
-            Calendar inTime = Calendar.getInstance();
-            inTime.setTimeInMillis(System.currentTimeMillis() - (60 * 60 * 1000));
-            ticket.setInTime(inTime);
-            ticket.setParkingSpot(parkingSpot);
-            ticket.setVehicleRegNumber("ABCDEF");
-            
-            when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
-            
-            parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw  new RuntimeException("Failed to set up test mock objects");
-        }
-    }
-    
-    @Test
-    public void processIncomingVehicleTest(){
-    	// Arrange
-    	when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
-    	when(inputReaderUtil.readSelection()).thenReturn(1);
-        when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
-        
-        // Act
-        parkingService.processIncomingVehicle();
-        
-        // Assert
-        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
-        verify(ticketDAO, Mockito.times(1)).saveTicket(any(Ticket.class));
-    }
+	@BeforeEach
+	private void setUpPerTest() {
+		try {
+			when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
 
-    @Test
-    public void processExitingVehicleTest(){
-    	// Arrange
-    	when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
-        when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
-        
-        // Act
-        parkingService.processExitingVehicle();
-        
-        // Assert
-        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
-    }
+			ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+			ticket = new Ticket();
+			Calendar inTime = Calendar.getInstance();
+			inTime.setTimeInMillis(System.currentTimeMillis() - (60 * 60 * 1000));
+			ticket.setInTime(inTime);
+			ticket.setParkingSpot(parkingSpot);
+			ticket.setVehicleRegNumber("ABCDEF");
+
+			when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
+
+			parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Failed to set up test mock objects");
+		}
+	}
+
+	@Test
+	public void processIncomingVehicleTest() {
+		// Arrange
+		when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+		when(inputReaderUtil.readSelection()).thenReturn(1);
+		when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
+
+		// Act
+		parkingService.processIncomingVehicle();
+
+		// Assert
+		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+		verify(ticketDAO, Mockito.times(1)).saveTicket(any(Ticket.class));
+	}
+
+	@Test
+	public void processExitingVehicleTest() {
+		// Arrange
+		when(ticketDAO.getTicket(anyString())).thenReturn(ticket);
+		when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+
+		// Act
+		parkingService.processExitingVehicle();
+
+		// Assert
+		verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+	}
 
 }

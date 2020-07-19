@@ -3,67 +3,67 @@ package com.parkit.parkingsystem.model;
 import java.util.Calendar;
 
 public class Ticket {
-    private int id;
-    private ParkingSpot parkingSpot;
-    private String vehicleRegNumber;
-    private double price;
-    private Calendar inTime;
-    private Calendar outTime;
-    private boolean discount;
+	private int id;
+	private ParkingSpot parkingSpot;
+	private String vehicleRegNumber;
+	private double price;
+	private Calendar inTime;
+	private Calendar outTime;
+	private boolean discount;
 
-    public int getId() {
-        return id;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+	public void setId(int id) {
+		this.id = id;
+	}
 
-    public ParkingSpot getParkingSpot() {
-        return parkingSpot;
-    }
+	public ParkingSpot getParkingSpot() {
+		return parkingSpot;
+	}
 
-    public void setParkingSpot(ParkingSpot parkingSpot) {
-        this.parkingSpot = parkingSpot;
-    }
+	public void setParkingSpot(ParkingSpot parkingSpot) {
+		this.parkingSpot = parkingSpot;
+	}
 
-    public String getVehicleRegNumber() {
-        return vehicleRegNumber;
-    }
+	public String getVehicleRegNumber() {
+		return vehicleRegNumber;
+	}
 
-    public void setVehicleRegNumber(String vehicleRegNumber) {
-        this.vehicleRegNumber = vehicleRegNumber;
-    }
+	public void setVehicleRegNumber(String vehicleRegNumber) {
+		this.vehicleRegNumber = vehicleRegNumber;
+	}
 
-    public double getPrice() {
-        return price;
-    }
+	public double getPrice() {
+		return price;
+	}
 
-    public void setPrice(double price) {
-        this.price = price;
-    }
+	public void setPrice(double price) {
+		this.price = price;
+	}
 
-    public Calendar getInTime() {
-        return inTime;
-    }
+	public Calendar getInTime() {
+		return inTime;
+	}
 
-    public void setInTime(Calendar inTime) {
-        this.inTime = inTime;
-    }
+	public void setInTime(Calendar inTime) {
+		this.inTime = inTime;
+	}
 
-    public Calendar getOutTime() {
-        return outTime;
-    }
+	public Calendar getOutTime() {
+		return outTime;
+	}
 
-    public void setOutTime(Calendar outTime) {
-        this.outTime = outTime;
-    }
-    
-    public boolean getDiscount() {
-        return discount;
-    }
+	public void setOutTime(Calendar outTime) {
+		this.outTime = outTime;
+	}
 
-    public void setDiscount(boolean discount) {
-        this.discount = discount;
-    }
+	public boolean getDiscount() {
+		return discount;
+	}
+
+	public void setDiscount(boolean discount) {
+		this.discount = discount;
+	}
 }
