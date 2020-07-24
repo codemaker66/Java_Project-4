@@ -82,14 +82,14 @@ public class ParkingSpotDAO {
 		ResultSet rs = null;
 		try {
 			con = dataBaseConfig.getConnection();
-			ps = con.prepareStatement(DBConstants.CHECK_PARKING_SPOT_AVAILABILITY);
+			ps = con.prepareStatement(DBConstants.GET_PARKING_SPOT);
 			ps.setInt(1, number);
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				return (number == rs.getInt(1) && rs.getInt(2) == 0);
 			}
 		} catch (Exception ex) {
-			logger.error("Error fetching available parking spot", ex);
+			logger.error("Error fetching parking spot", ex);
 		} finally {
 			dataBaseConfig.closeConnection(con);
 			dataBaseConfig.closePreparedStatement(ps);

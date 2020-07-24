@@ -116,30 +116,25 @@ public class TicketDAO {
 	}
 
 	/**
-	 * This method check for vehicle registration number or price and out time existence in the database.
+	 * This method check for vehicle registration number existence in the database.
 	 * 
 	 * @param vehicleRegNumber contain a string that represent the vehicle registration number.
-	 * @param option contain an integer to make the correct call of the needed check in the database.
-	 * @return true if vehicle registration number or price and out time exists in the database.
+	 * @return true if vehicle registration number exists in the database.
 	 */
-	public boolean checkVehicleTicket(String vehicleRegNumber, int option) {
+	public boolean checkVehicleRegNumber(String vehicleRegNumber) {
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			con = dataBaseConfig.getConnection();
-			if (option == 1) {
-				ps = con.prepareStatement(DBConstants.GET_VEHICLE_REG_NUMBER);
-			} else {
-				ps = con.prepareStatement(DBConstants.CHECK_FARE_AND_OUT_TIME);
-			}
+			ps = con.prepareStatement(DBConstants.GET_VEHICLE_REG_NUMBER);
 			ps.setString(1, vehicleRegNumber);
 			rs = ps.executeQuery();
 			if (rs.next()) {
 				return true;
 			}
 		} catch (Exception ex) {
-			logger.error("Error fetching vehicle ticket", ex);
+			logger.error("Error fetching vehicle registration number", ex);
 		} finally {
 			dataBaseConfig.closeConnection(con);
 			dataBaseConfig.closePreparedStatement(ps);
@@ -147,6 +142,41 @@ public class TicketDAO {
 		}
 
 		return false;
+	}
+	
+	/**
+	 * This method retrieve the fare and out time of the given vehicle registration number.
+	 * 
+	 * @param vehicleRegNumber contain a string that represent the vehicle registration number.
+	 * @return the ticket of the given vehicle.
+	 */
+	public Ticket getFareAndOutTime(String vehicleRegNumber) {
+		Ticket ticket = null;
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			con = dataBaseConfig.getConnection();
+			ps = con.prepareStatement(DBConstants.GET_FARE_AND_OUT_TIME);
+			ps.setString(1, vehicleRegNumber);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				ticket = new Ticket();
+				ticket.setPrice(rs.getDouble(1));
+				Timestamp timestamp = rs.getTimestamp(2);
+				Calendar ouTime = Calendar.getInstance();
+				ouTime.setTimeInMillis(timestamp.getTime());
+				ticket.setOutTime(ouTime);
+			}
+		} catch (Exception ex) {
+			logger.error("Error fetching vehicle fare and out time", ex);
+		} finally {
+			dataBaseConfig.closeConnection(con);
+			dataBaseConfig.closePreparedStatement(ps);
+			dataBaseConfig.closeResultSet(rs);
+		}
+
+		return ticket;
 	}
 
 	/**

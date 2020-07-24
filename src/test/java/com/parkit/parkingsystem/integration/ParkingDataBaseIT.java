@@ -4,6 +4,7 @@ import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
+import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.junit.jupiter.api.AfterAll;
@@ -15,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,7 +58,7 @@ public class ParkingDataBaseIT {
 		parkingService.processIncomingVehicle();
 
 		// Act
-		boolean result1 = ticketDAO.checkVehicleTicket("ABCDEF", 1);
+		boolean result1 = ticketDAO.checkVehicleRegNumber("ABCDEF");
 		int number = ticketDAO.getVehicleParkingNumber("ABCDEF");
 		boolean result2 = parkingSpotDAO.checkParkingSpotAvailability(number);
 
@@ -74,10 +76,11 @@ public class ParkingDataBaseIT {
 		parkingService.processExitingVehicle();
 
 		// Act
-		boolean result = ticketDAO.checkVehicleTicket("ABCDEF", 2);
+		Ticket ticket = ticketDAO.getFareAndOutTime("ABCDEF");
 
 		// Assert
-		assertEquals(true, result);
+		assertEquals(0, ticket.getPrice());
+		assertNotNull(ticket.getOutTime());
 	}
 
 }

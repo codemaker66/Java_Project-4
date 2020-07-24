@@ -45,7 +45,7 @@ public class ParkingService {
 				ticket.setPrice(0);
 				ticket.setInTime(inTime);
 				ticket.setOutTime(null);
-				if (ticketDAO.checkVehicleTicket(vehicleRegNumber, 1)) {
+				if (ticketDAO.checkVehicleRegNumber(vehicleRegNumber)) {
 					ticket.setDiscount(true);
 					System.out.println(
 							"Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount");
