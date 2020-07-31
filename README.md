@@ -1,4 +1,7 @@
 # Parking System
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=codemaker66_Java_Project-4&metric=alert_status)](https://sonarcloud.io/dashboard?id=codemaker66_Java_Project-4)
+
 A command line app for managing the parking system. 
 This app uses Java to run and stores the data in Mysql DB.
 
