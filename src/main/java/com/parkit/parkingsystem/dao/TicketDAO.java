@@ -29,6 +29,7 @@ public class TicketDAO {
 	public boolean saveTicket(Ticket ticket) {
 		Connection con = null;
 		PreparedStatement ps = null;
+		boolean result = false;
 		try {
 			con = dataBaseConfig.getConnection();
 			ps = con.prepareStatement(DBConstants.SAVE_TICKET);
@@ -39,14 +40,14 @@ public class TicketDAO {
 			ps.setTimestamp(5,
 					(ticket.getOutTime() == null) ? null : (new Timestamp(ticket.getOutTime().getTimeInMillis())));
 			ps.setBoolean(6, ticket.getDiscount());
-			return ps.execute();
+			result = ps.execute();
 		} catch (Exception ex) {
 			logger.error("Error fetching next available slot", ex);
-			return false;
 		} finally {
 			dataBaseConfig.closeConnection(con);
 			dataBaseConfig.closePreparedStatement(ps);
 		}
+		return result;
 	}
 
 	/**
@@ -56,10 +57,10 @@ public class TicketDAO {
 	 * @return the ticket of the given vehicle.
 	 */
 	public Ticket getTicket(String vehicleRegNumber) {
-		Ticket ticket = null;
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		Ticket ticket = null;
 		try {
 			con = dataBaseConfig.getConnection();
 			ps = con.prepareStatement(DBConstants.GET_TICKET);
@@ -85,7 +86,6 @@ public class TicketDAO {
 			dataBaseConfig.closePreparedStatement(ps);
 			dataBaseConfig.closeResultSet(rs);
 		}
-
 		return ticket;
 	}
 
@@ -98,6 +98,7 @@ public class TicketDAO {
 	public boolean updateTicket(Ticket ticket) {
 		Connection con = null;
 		PreparedStatement ps = null;
+		boolean result = false;
 		try {
 			con = dataBaseConfig.getConnection();
 			ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
@@ -105,14 +106,14 @@ public class TicketDAO {
 			ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTimeInMillis()));
 			ps.setInt(3, ticket.getId());
 			ps.execute();
-			return true;
+			result = true;
 		} catch (Exception ex) {
 			logger.error("Error saving ticket info", ex);
-			return false;
 		} finally {
 			dataBaseConfig.closeConnection(con);
 			dataBaseConfig.closePreparedStatement(ps);
 		}
+		return result;
 	}
 
 	/**
@@ -125,13 +126,14 @@ public class TicketDAO {
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		boolean result = false;
 		try {
 			con = dataBaseConfig.getConnection();
 			ps = con.prepareStatement(DBConstants.GET_VEHICLE_REG_NUMBER);
 			ps.setString(1, vehicleRegNumber);
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				return true;
+				result = true;
 			}
 		} catch (Exception ex) {
 			logger.error("Error fetching vehicle registration number", ex);
@@ -140,10 +142,9 @@ public class TicketDAO {
 			dataBaseConfig.closePreparedStatement(ps);
 			dataBaseConfig.closeResultSet(rs);
 		}
-
-		return false;
+		return result;
 	}
-	
+
 	/**
 	 * This method retrieve the fare and out time of the given vehicle registration number.
 	 * 
@@ -151,10 +152,10 @@ public class TicketDAO {
 	 * @return the ticket of the given vehicle.
 	 */
 	public Ticket getFareAndOutTime(String vehicleRegNumber) {
-		Ticket ticket = null;
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		Ticket ticket = null;
 		try {
 			con = dataBaseConfig.getConnection();
 			ps = con.prepareStatement(DBConstants.GET_FARE_AND_OUT_TIME);
@@ -175,7 +176,6 @@ public class TicketDAO {
 			dataBaseConfig.closePreparedStatement(ps);
 			dataBaseConfig.closeResultSet(rs);
 		}
-
 		return ticket;
 	}
 
@@ -186,17 +186,17 @@ public class TicketDAO {
 	 * @return an integer that represent the parking spot number.
 	 */
 	public int getVehicleParkingNumber(String vehicleRegNumber) {
-		int number = 0;
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		int result = 0;
 		try {
 			con = dataBaseConfig.getConnection();
 			ps = con.prepareStatement(DBConstants.GET_VEHICLE_REG_NUMBER);
 			ps.setString(1, vehicleRegNumber);
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				return rs.getInt(1);
+				result = rs.getInt(1);
 			}
 		} catch (Exception ex) {
 			logger.error("Error fetching vehicle parking number", ex);
@@ -205,8 +205,7 @@ public class TicketDAO {
 			dataBaseConfig.closePreparedStatement(ps);
 			dataBaseConfig.closeResultSet(rs);
 		}
-
-		return number;
+		return result;
 	}
 
 }

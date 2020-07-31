@@ -54,20 +54,21 @@ public class ParkingSpotDAO {
 	public boolean updateParking(ParkingSpot parkingSpot) {
 		Connection con = null;
 		PreparedStatement ps = null;
+		boolean result = false;
 		try {
 			con = dataBaseConfig.getConnection();
 			ps = con.prepareStatement(DBConstants.UPDATE_PARKING_SPOT);
 			ps.setBoolean(1, parkingSpot.isAvailable());
 			ps.setInt(2, parkingSpot.getId());
 			int updateRowCount = ps.executeUpdate();
-			return (updateRowCount == 1);
+			result = (updateRowCount == 1);
 		} catch (Exception ex) {
 			logger.error("Error updating parking info", ex);
-			return false;
 		} finally {
 			dataBaseConfig.closeConnection(con);
 			dataBaseConfig.closePreparedStatement(ps);
 		}
+		return result;
 	}
 
 	/**
@@ -80,13 +81,14 @@ public class ParkingSpotDAO {
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
+		boolean result = false;
 		try {
 			con = dataBaseConfig.getConnection();
 			ps = con.prepareStatement(DBConstants.GET_PARKING_SPOT);
 			ps.setInt(1, number);
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				return (number == rs.getInt(1) && rs.getInt(2) == 0);
+				result = (number == rs.getInt(1) && rs.getInt(2) == 0);
 			}
 		} catch (Exception ex) {
 			logger.error("Error fetching parking spot", ex);
@@ -95,7 +97,7 @@ public class ParkingSpotDAO {
 			dataBaseConfig.closePreparedStatement(ps);
 			dataBaseConfig.closeResultSet(rs);
 		}
-		return false;
+		return result;
 	}
 
 }
