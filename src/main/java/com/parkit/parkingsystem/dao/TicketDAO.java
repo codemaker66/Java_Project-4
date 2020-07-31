@@ -189,14 +189,14 @@ public class TicketDAO {
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		int result = 0;
+		int number = 0;
 		try {
 			con = dataBaseConfig.getConnection();
 			ps = con.prepareStatement(DBConstants.GET_VEHICLE_REG_NUMBER);
 			ps.setString(1, vehicleRegNumber);
 			rs = ps.executeQuery();
 			if (rs.next()) {
-				result = rs.getInt(1);
+				number = rs.getInt(1);
 			}
 		} catch (Exception ex) {
 			logger.error("Error fetching vehicle parking number", ex);
@@ -205,7 +205,7 @@ public class TicketDAO {
 			dataBaseConfig.closePreparedStatement(ps);
 			dataBaseConfig.closeResultSet(rs);
 		}
-		return result;
+		return number;
 	}
 
 }
